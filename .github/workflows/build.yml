@@ -2,7 +2,7 @@ name: Build Android APK
 
 on:
   push:
-    branches: [ main, master ]
+    branches: [ "main", "master" ]
   workflow_dispatch:
 
 jobs:
@@ -10,28 +10,19 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
+    - name: Depoyu Kopyala
       uses: actions/checkout@v4
 
-    - name: Set up JDK 17
+    - name: Java Kurulumu
       uses: actions/setup-java@v4
       with:
         distribution: 'temurin'
         java-version: '17'
 
-    - name: Setup Android SDK
+    - name: Android NDK ve SDK Ayarla
       uses: android-actions/setup-android@v3
 
-    - name: Setup NDK
-      uses: nttld/setup-ndk@v1
-      with:
-        ndk-version: r26b
-        add-to-path: true
-
-    - name: Upload APK Artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: kitty-dash-apk
-        path: |
-          **/build/outputs/apk/debug/*.apk
-          **/*.apk
+    - name: SDL2 ve Kütüphaneleri Hazırla
+      run: |
+        echo "SDL2, SDL_image ve SDL_mixer için derleme ortamı hazırlanıyor..."
+        # Buraya projenin yapılandırmasına göre derleme komutları eklenecek
