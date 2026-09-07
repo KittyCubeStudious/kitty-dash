@@ -22,7 +22,26 @@ jobs:
     - name: Setup Android SDK
       uses: android-actions/setup-android@v3
 
-    - name: Build with Gradle / SDL2
-      run: |
-        echo "Android build environment ready."
+    - name: Setup NDK
+      uses: nttld/setup-ndk@v3
+      with:
+        ndk-version: r26b
+        add-to-path: true
 
+    - name: Build Project
+      run: |
+        echo "Building SDL2 project..."
+        # Projede CMakeLists.txt varsa Gradle üzerinden otomatik derleme tetiklenir
+        if [ -f "app/build.gradle" ]; then
+          cd app && ./gradlew assembleDebug
+        else
+          echo "Gradle build file check..."
+        fi
+
+    - name: Upload APK Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: kitty-dash-apk
+        path: |
+          **/build/outputs/apk/debug/*.apk
+          **/*.apk
