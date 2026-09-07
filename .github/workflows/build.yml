@@ -1,4 +1,4 @@
-name: Build Android APK
+name: SDL2 Android APK Build
 
 on:
   push:
@@ -8,21 +8,38 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
-    - name: Depoyu Kopyala
-      uses: actions/checkout@v4
+      - name: Kodlari Al
+        uses: actions/checkout@v4
 
-    - name: Java Kurulumu
-      uses: actions/setup-java@v4
-      with:
-        distribution: 'temurin'
-        java-version: '17'
+      - name: Java Kur
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
 
-    - name: Android NDK ve SDK Ayarla
-      uses: android-actions/setup-android@v3
+      - name: Android SDK ve NDK Kur
+        uses: android-actions/setup-android@v3
 
-    - name: SDL2 ve Kütüphaneleri Hazırla
-      run: |
-        echo "SDL2, SDL_image ve SDL_mixer için derleme ortamı hazırlanıyor..."
-        # Buraya projenin yapılandırmasına göre derleme komutları eklenecek
+      - name: SDL2 Bagimliliklarini Indir
+        run: |
+          git clone https://github.com/libsdl-org/SDL.git -b SDL2
+          git clone https://github.com/libsdl-org/SDL_image.git -b SDL2
+          git clone https://github.com/libsdl-org/SDL_mixer.git -b SDL2
+
+      - name: Gradle ile APK Olustur
+        run: |
+          # Projede gradlew varsa çalıştır, yoksa varsayılan build al
+          if [ -f "gradlew" ]; then
+            chmod +x gradlew
+            ./gradlew assembleDebug
+          else
+            echo "Gradle wrapper bulunamadi, lutfen projeye gradlew ekleyin."
+            exit 1
+          fi
+
+      - name: Artifact (APK) Yukle
+        uses: actions/upload-artifact@v4
+        with:
+          name: oyun-debug-apk
+          path: app/build/outputs/apk/debug/app-debug.apk
